@@ -1,0 +1,74 @@
+﻿@page "/"
+@inherits BlazorStateComponent
+@inject IUriHelper UriHelper
+
+<div class="container m-2">
+    @if (AppState.BPs == null)
+    {
+        <span class="spinner-border"></span><p><em>Loading Branch Plants...</em></p>
+    }
+    else
+    {
+        <input class="form-control" type="search" placeholder="Enter Branch/Plant Hint..." @bind-value=@Search @bind-value:event="oninput" />
+        <table class="table table-light table-hover border-left border-right border-bottom">
+            <tbody>
+                @foreach (var bp in Rows)
+                {
+                    <tr @onclick=@(() => SelectRow(bp))>
+                        <td>@bp.F0006_MCU</td>
+                        <td>@bp.F0006_DL01</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">
+                        <div class="d-flex justify-content-end">
+                            <em>@Result</em>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+</div>
+
+
+@code {
+    protected AppState AppState => GetState<AppState>();
+
+    protected string Search { get; set; } = string.Empty;
+
+    protected bool RowContains(F0006Row bp, string search) =>
+        bp.F0006_MCU.ToLower().Contains(search) ||
+        bp.F0006_DL01.ToLower().Contains(search);
+
+    protected bool RowContains(F0006Row bp, string[] search) =>
+        search.Aggregate(true, (a, s) => a && RowContains(bp, s));
+
+    protected IEnumerable<F0006Row> Rows => Search.Length > 2
+        ? AppState.BPs
+          .Where(bp => RowContains(bp, Search.Trim().ToLower().Split(" ")))
+        : Enumerable.Empty<F0006Row>();
+
+    protected string Result => Search.Length > 2
+        ? $"Found {Rows.Count()} out of {AppState.BPs.Count()}"
+        : "Enter at least 3 characters...";
+
+    protected void SelectRow(F0006Row row)
+    {
+        if (row.F0006_MCU != null)
+        {
+            Mediator.Send(new SelectBPAction { BP = row.F0006_MCU });
+        }
+    }
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        if (AppState.BPs == null)
+        {
+            Mediator.Send(new F4102BPsAction());
+        }
+    }
+}

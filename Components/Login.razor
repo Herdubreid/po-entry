@@ -1,0 +1,41 @@
+@inject AuthenticationStateProvider auth
+
+<div class="container mt-5 justify-content-center">
+    <form @onsubmit=@OnSubmit>
+        <h4 class="font-weight-normal text-center">Login</h4>
+
+        <div class="form-group">
+            <label for="user">User</label>
+            <input id="user" type="text" class="form-control" placeholder="User" required autofocus @bind=@User />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" class="form-control" placeholder="Password" required autofocus @bind=@Password />
+        </div>
+
+        <button class="btn btn-lg btn-primary" type="submit" disabled=@Busy>
+            <span class=@Spin></span> Sign in
+        </button>
+        <div class="m-4">
+            <label class="text-danger">@Error</label>
+        </div>
+    </form>
+</div>
+
+@code {
+
+    protected string Spin => $"{(@Busy ? "spinner-grow spinner-grow-sm" : "" )}";
+    protected bool Busy { get; set; } = false;
+    protected string User { get; set; }
+    protected string Password { get; set; }
+    protected string Error { get; set; }
+
+    async protected void OnSubmit()
+    {
+        Busy = true;
+        Error = await (auth as JdeAuthenticationStateProvider).Login(User, Password);
+        Busy = false;
+        StateHasChanged();
+    }
+
+}

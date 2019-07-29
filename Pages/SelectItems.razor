@@ -1,0 +1,155 @@
+﻿@page  "/items"
+@inherits BlazorStateComponent
+@inject IUriHelper UriHelper
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        @AppState.CurrentBP?.F0006_MCU
+        @AppState.CurrentBP?.F0006_DL01
+    </div>
+    <form @onsubmit=@Submit>
+        <div class="card-body">
+            @if (AppState.CurrentBPRows == null)
+            {
+                <span class="spinner-border"></span><p><em>Loading Items...</em></p>
+            }
+            else
+            {
+                <table class="table table-striped">
+                    <tbody>
+                        @foreach (var item in SelectedRows)
+                        {
+                            <tr>
+                                <td>@item.F4102_LITM</td>
+                                <td>@item.F4101_DSC1</td>
+                                <td>@item.F4101_DSC2</td>
+                                <td><input class="form-control w-100" type="number" required @bind="@item.Qty" placeholder="Quantity" /></td>
+                                <td><button class="btn btn-sm btn-danger" type="button" @onclick=@(() => ToggleRow(item))><span class="oi oi-delete"></span></button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" type="submit" disabled=@(SelectedRows.Count()==0)>Submit</button>
+            <div class="content mt-2">
+                @if (AppState.Error != null)
+                {
+                    <div class="row">
+                        <div class="col">
+                            @foreach (var error in AppState.Error)
+                            {
+                                <div class="row">
+                                    <p class="text-danger">@error.MOBILE.Replace("\\u000a", " ")</p>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-danger" type="button" @onclick=@ClearError><span class="oi oi-delete"></span></button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Item</td>
+                                <td>Description</td>
+                                <td>Supplier</td>
+                                <td>UOM</td>
+                                <td>Qty</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in AppState.PoLines.Where(r => r.z_UITM_35 != null))
+                            {
+                                <tr>
+                                    <td>@row.z_UITM_35</td>
+                                    <td>@row.z_DSC1_44</td>
+                                    <td>@row.z_AN8_77</td>
+                                    <td>@row.z_UOM_38</td>
+                                    <td>@row.z_UORGE1_36</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+@if (AppState.CurrentBPRows != null)
+{
+    <input class="form-control mt-2" type="search" placeholder="Enter Item Hints..." @bind-value=@Search @bind-value:event="oninput" />
+    <table class="table table-light table-hover border-left border-right border-bottom shadow-sm">
+        <tbody>
+            @foreach (var item in Rows)
+            {
+                <tr @onclick=@(() => ToggleRow(item))>
+                    <td>@item.F4102_LITM</td>
+                    <td>@item.F4101_DSC1</td>
+                    <td>@item.F4101_DSC2</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">
+                    <div class="d-flex justify-content-end">
+                        <em>@Result</em>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+@code {
+    protected AppState AppState => GetState<AppState>();
+
+    protected string Search { get; set; } = string.Empty;
+
+    protected bool RowContains(V4102XPIRow bp, string search) =>
+     bp.F4101_DSC1.ToLower().Contains(search) ||
+     bp.F4101_DSC2.ToLower().Contains(search) ||
+     bp.F4102_LITM.ToLower().Contains(search);
+
+    protected bool RowContains(V4102XPIRow bp, string[] search) => search
+        .Aggregate(true, (a, s) => a && RowContains(bp, s));
+
+    protected IEnumerable<V4102XPIRow> Rows => Search.Length > 2
+        ? AppState.CurrentBPRows
+          .Where(ibp => !ibp.Selected)
+          .Where(ibp => RowContains(ibp, Search.Trim().ToLower().Split(" ")))
+        : Enumerable.Empty<V4102XPIRow>();
+
+    protected IEnumerable<V4102XPIRow> SelectedRows => AppState.CurrentBPRows.Where(ibp => ibp.Selected);
+
+    protected string Result => Search.Length > 2
+        ? $"Found {Rows.Count()} out of {AppState.CurrentBPRows.Count()}"
+        : "Enter at least 3 characters...";
+
+    protected void ClearError() => Mediator.Send(new ClearErrorAction());
+
+    protected void ToggleRow(V4102XPIRow row) => Mediator.Send(new ToggleSelectIBPAction { LITM = row.F4102_LITM });
+
+    protected void Submit()
+    {
+        Mediator.Send(new CreatePoAction());
+    }
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        if (AppState.CurrentBP == null)
+        {
+            UriHelper.NavigateTo("/");
+        }
+        else
+        {
+            if (AppState.CurrentBP.v4102XPIResponse == null)
+            {
+                Mediator.Send(new V4102XPIAction { BP = AppState.CurrentBP.F0006_MCU });
+            }
+        }
+    }
+}

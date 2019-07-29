@@ -1,0 +1,19 @@
+﻿@page "/error/{msg}"
+
+<div clss="content">
+    <div class="row">
+        <p class="col text-danger">
+            Fatal Error:
+        </p>
+    </div>
+    <div class="row">
+        <p class="col text-danger">
+            @Msg
+        </p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    protected string Msg { get; set; }
+}

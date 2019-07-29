@@ -1,0 +1,40 @@
+﻿@page "/create-po"
+@inherits BlazorStateComponent
+@inject IUriHelper UriHelper
+
+@if (AppState.PoResponse == null)
+{
+    <span class="spinner-border"></span><p><em>Creating Order...</em></p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Order</td>
+                <td>Type</td>
+                <td>Supplier</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in AppState.PoResponse)
+            {
+                <tr>
+                    <td>@order.z_DOCO_6</td>
+                    <td>@order.z_DCTO_7</td>
+                    <td>@order.z_AN8_10</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" type="button" @onclick=@Ok>Ok</button>
+}
+
+@code {
+    protected AppState AppState => Store.GetState<AppState>();
+
+    protected void Ok()
+    {
+        UriHelper.NavigateTo("/");
+    }
+}

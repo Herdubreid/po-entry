@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29111.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoEntry", "PoEntry.csproj", "{63510347-C9DA-4C23-8CCA-EC034311D69E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Celin.AIS", "..\Celin.AIS\Celin.AIS.csproj", "{459B2E2D-C1E3-4A15-9296-9EE3D07CA784}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63510347-C9DA-4C23-8CCA-EC034311D69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63510347-C9DA-4C23-8CCA-EC034311D69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63510347-C9DA-4C23-8CCA-EC034311D69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63510347-C9DA-4C23-8CCA-EC034311D69E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459B2E2D-C1E3-4A15-9296-9EE3D07CA784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459B2E2D-C1E3-4A15-9296-9EE3D07CA784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459B2E2D-C1E3-4A15-9296-9EE3D07CA784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459B2E2D-C1E3-4A15-9296-9EE3D07CA784}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53C41881-1752-4D1D-B2CD-FFE525545844}
+	EndGlobalSection
+EndGlobal

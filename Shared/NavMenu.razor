@@ -1,0 +1,46 @@
+@inherits BlazorStateComponent
+@inject IUriHelper UriHelper
+@inject AuthenticationStateProvider auth
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Purchase Entry</a>
+    <button class="navbar-toggler" @onclick="@ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="@ToggleNavMenu">
+    <ul class="nav flex-column">
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <button type="button" class="btn btn-warning" @onclick=@Logout><span class="oi oi-account-logout"></span> Logout</button>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+    </ul>
+</div>
+
+@code {
+
+    protected AppState AppState => GetState<AppState>();
+
+    protected bool collapseNavMenu = true;
+
+    protected string BpTitle(F0006Row row) => $"{row.F0006_MCU.Trim()} - {row.F0006_DL01}";
+    protected string BpLink(F0006Row row) => $"bp/{row.F0006_MCU.Trim()}";
+
+    protected string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    async protected void Logout() => await (auth as JdeAuthenticationStateProvider).Logout();
+}

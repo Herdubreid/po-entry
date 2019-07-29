@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+<div class="main">
+    <AuthorizeView>
+        <Authorizing>
+            <p><em>Loading...</em></p>
+        </Authorizing>
+        <NotAuthorized>
+            <PoEntry.Components.Login></PoEntry.Components.Login>
+        </NotAuthorized>
+        <Authorized>
+            <div class="content px-4">
+                @Body
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
