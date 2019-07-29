@@ -144,12 +144,5 @@
         {
             UriHelper.NavigateTo("/");
         }
-        else
-        {
-            if (AppState.CurrentBP.v4102XPIResponse == null)
-            {
-                Mediator.Send(new V4102XPIAction { BP = AppState.CurrentBP.F0006_MCU });
-            }
-        }
     }
 }
