@@ -23,7 +23,7 @@
                                 <td>@item.F4102_LITM</td>
                                 <td>@item.F4101_DSC1</td>
                                 <td>@item.F4101_DSC2</td>
-                                <td><input class="form-control w-100" type="number" required @bind="@item.Qty" placeholder="Quantity" /></td>
+                                <td><input class="form-control" type="number" required @bind="@item.Qty" placeholder="Quantity" /></td>
                                 <td><button class="btn btn-sm btn-danger" type="button" @onclick=@(() => ToggleRow(item))><span class="oi oi-delete"></span></button></td>
                             </tr>
                         }
@@ -33,9 +33,9 @@
         </div>
         <div class="card-footer">
             <button class="btn btn-primary" type="submit" disabled=@(SelectedRows.Count()==0)>Submit</button>
-            <div class="content mt-2">
-                @if (AppState.Error != null)
-                {
+            @if (AppState.Error != null)
+            {
+                <div class="content mt-2">
                     <div class="row">
                         <div class="col">
                             @foreach (var error in AppState.Error)
@@ -72,35 +72,29 @@
                             }
                         </tbody>
                     </table>
-                }
-            </div>
+                </div>
+            }
         </div>
     </form>
 </div>
 @if (AppState.CurrentBPRows != null)
 {
     <input class="form-control mt-2" type="search" placeholder="Enter Item Hints..." @bind-value=@Search @bind-value:event="oninput" />
-    <table class="table table-light table-hover border-left border-right border-bottom shadow-sm">
-        <tbody>
-            @foreach (var item in Rows)
-            {
-                <tr @onclick=@(() => ToggleRow(item))>
-                    <td>@item.F4102_LITM</td>
-                    <td>@item.F4101_DSC1</td>
-                    <td>@item.F4101_DSC2</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2">
-                    <div class="d-flex justify-content-end">
-                        <em>@Result</em>
-                    </div>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+    <div class="list-group">
+        @foreach (var item in Rows)
+        {
+            <button class="list-group-item list-group-item-action" @onclick=@(() => ToggleRow(item))>
+                <div class="row">
+                    <div class="col-auto">@item.F4102_LITM</div>
+                    <div class="col">@item.F4101_DSC1</div>
+                    <div class="col">@item.F4101_DSC2</div>
+                </div>
+            </button>
+        }
+        <div class="d-flex justify-content-end">
+            <em>@Result</em>
+        </div>
+    </div>
 }
 
 @code {

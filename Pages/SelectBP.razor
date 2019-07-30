@@ -5,31 +5,25 @@
 <div class="container m-2">
     @if (AppState.BPs == null)
     {
-        <span class="spinner-border"></span><p><em>Loading Branch Plants...</em></p>
+    <span class="spinner-border"></span><p><em>Loading Branch Plants...</em></p>
     }
     else
     {
-        <input class="form-control" type="search" placeholder="Enter Branch/Plant Hint..." @bind-value=@Search @bind-value:event="oninput" />
-        <table class="table table-light table-hover border-left border-right border-bottom">
-            <tbody>
-                @foreach (var bp in Rows)
-                {
-                    <tr @onclick=@(() => SelectRow(bp))>
-                        <td>@bp.F0006_MCU</td>
-                        <td>@bp.F0006_DL01</td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2">
-                        <div class="d-flex justify-content-end">
-                            <em>@Result</em>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+    <input class="form-control" type="search" placeholder="Enter Branch/Plant Hint..." @bind-value=@Search @bind-value:event="oninput" />
+    <div class="list-group">
+        @foreach (var bp in Rows)
+        {
+        <button class="list-group-item list-group-item-action" @onclick=@(() => SelectRow(bp))>
+            <div class="row">
+                <div class="col-auto">@bp.F0006_MCU</div>
+                <div class="col">@bp.F0006_DL01</div>
+            </div>
+        </button>
+        }
+    </div>
+    <div class="d-flex justify-content-end">
+        <em>@Result</em>
+    </div>
     }
 </div>
 
@@ -55,13 +49,7 @@
         ? $"Found {Rows.Count()} out of {AppState.BPs.Count()}"
         : "Enter at least 3 characters...";
 
-    protected void SelectRow(F0006Row row)
-    {
-        if (row.F0006_MCU != null)
-        {
-            Mediator.Send(new SelectBPAction { BP = row.F0006_MCU });
-        }
-    }
+    protected void SelectRow(F0006Row row) => Mediator.Send(new SelectBPAction { BP = row.F0006_MCU });
 
     protected override void OnInit()
     {

@@ -61,7 +61,19 @@
                                 specialValueId = "LITERAL"
                             }
                         }
-
+                    },
+                    new Celin.AIS.Condition
+                    {
+                        controlId = "F4102.VEND",
+                        @operator = "GREATER",
+                        value = new []
+                        {
+                            new Celin.AIS.Value
+                            {
+                                content = "0",
+                                specialValueId = "LITERAL"
+                            }
+                        }
                     }
                 }
             };
